@@ -1,0 +1,166 @@
+#Esse tutorial serve para a compilação do foam-extend-4.1
+
+#Pode demorar de 10 a 20min na execução de comandos, mais 5h a 7h rodando a compilação dos arquivos.
+
+
+Preparando o sistema:
+--------------------
+sudo apt update
+
+sudo apt-get install git-core apt build-essential binutils-dev cmake flex \
+zlib1g-dev libncurses5-dev curl bison \
+libxt-dev rpm mercurial graphviz gcc-11 g++-11
+
+sudo apt install git-core build-essential binutils-dev cmake flex
+
+sudo apt install zlib1g-dev qt4-dev-tools libqt4-dev libncurses5-dev libiberty-dev
+
+sudo apt install libxt-dev rpm mercurial graphviz
+
+sudo apt install curl 
+
+sudo apt install openmpi-bin libopenmpi-dev 
+--------------------
+
+
+
+Criando local de instalação:
+--------------------
+
+#Obs: Foi feita a instalação na pasta foam dentro da $HOME. É possivel instalar em outro lugar que deseja, modificando alguns comandos.
+
+cd ~
+mkdir foam
+cd foam
+Acessar o site: https://sourceforge.net/p/foam-extend/foam-extend-5.0/ci/master/tree/
+# git clone -b nextRelease https://git.code.sf.net/p/foam-extend/foam-extend-4.1 foam-extend-4.1_NR
+git clone https://git.code.sf.net/p/foam-extend/foam-extend-5.0 foam-extend-foam-extend-5.0
+
+--------------------
+
+
+
+Pré-compilação:
+--------------------
+ls -al
+mv foam-extend-foam-extend-5.0 ~/foam/foam-extend-5.0
+# cd ~/foam/foam-extend-4.1_NR
+cd ~/foam/foam-extend-5.0
+# sed -i.orig s/"5\.0$"/"4\.1_NR"/g etc/bashrc
+sed -i s/"4\.1_NR"/"5\.0"/g etc/bashrc
+
+module load buildenv-gcc/2018a-eb
+
+echo "export PARAVIEW_SYSTEM=1" > etc/prefs.sh
+echo "export WM_MPLIB=SYSTEMOPENMPI" >> etc/prefs.sh
+echo "export OPENMPI_BIN_DIR=\$OPENMPI_DIR/bin" >> etc/prefs.sh
+echo "export OPENMPI_LIB_DIR=/software/sse/easybuild/prefix/software/OpenMPI/2.1.2-GCC-6.4.0-2.28/lib" >> etc/prefs.sh
+
+echo 'export OPENMPI_INCLUDE_DIR="`$OPENMPI_BIN_DIR/mpicc --showme:incdirs`"' >> etc/prefs.sh
+
+echo 'export OPENMPI_COMPILE_FLAGS="`$OPENMPI_BIN_DIR/mpicc --showme:compile`"' >> etc/prefs.sh
+
+echo 'export OPENMPI_LINK_FLAGS="`$OPENMPI_BIN_DIR/mpicc --showme:link`"' >> etc/prefs.sh
+--------------------
+
+
+
+Apagando arquivos
+--------------------
+
+rm -r src/mesh/blockMesh/blockEdges 
+--------------------
+
+
+
+Mudança no arquivo bashrc:
+--------------------
+cd ~/foam/foam-extend-4.1_NR/etc
+
+gedit bashrc
+
+##Comente a linha 66. Essa linha deve ser a: 
+: ${FOAM_INST_DIR:=$foamInstall}; export FOAM_INST_DIR
+	
+##Acrescente o comando a seguir, abaixo desta linha acima comentada:
+export FOAM_INST_DIR=$HOME/foam
+
+##Obs: Caso voce nao tenha instalado na pasta foam, altere o comando acima para o endereço de instalação. 
+
+##Salve esse arquivo
+--------------------
+
+
+
+Apelidação:
+--------------------
+cd ~/foam/foam-extend-4.1_NR
+source etc/bashrc
+ 
+echo "alias fe41NR='source $HOME/foam/foam-extend-4.1_NR/etc/bashrc'" >> $HOME/.bashrc
+
+##OBS: ESTE ÚLTIMO COMANDO SERVE COMO APELIDO PARA O FOAM-EXTEND-4.1. TODA VEZ QUE FOR USAR O FOAM-EXTEND-4.1, O CHAME PELO APELIDO NO TERMINAL DIGITANDO fe41NR. ISSO INICIALIZA SEUS COMANDOS! CASO NAO SEJA FEITO SUA INICIALIZAÇÃO PELO APELIDO, NÃO FUNCIONARÁ!
+
+##Se voce utiliza mais que um openfoam/foam, cabe dá-los apelidos tambem. Isso tira qualquer problema de querer usar uma versão mas acabar sem saber, estar usando outra versão... 
+
+echo "alias fe41NR_compile='module load buildenv-gcc/2018a-eb; export FOAM_INST_DIR=/foam; . \$FOAM_INST_DIR/foam-extend-4.1_NR/etc/bashrc'" >> ../../../addToBashrc
+--------------------
+
+
+
+Compilação:
+--------------------
+## ainda na pasta ~/foam/foam-extend-4.1_NR
+
+sed -i -e 's=rpmbuild --define=rpmbuild --define "_build_id_links none" --define=' ThirdParty/tools/makeThirdPartyFunctionsForRPM
+
+sed -i -e 's/gcc/\$(WM_CC)/' wmake/rules/linux64Gcc/c
+
+sed -i -e 's/g++/\$(WM_CXX)/' wmake/rules/linux64Gcc/c++
+
+fe41NR
+
+./Allwmake.firstInstall
+
+## Proceda com a compilação negando a instalação do PARAVIEW. Então responda Y. 
+## A compilação pode demorar entre 5h a 7h.
+## Se for do interesse, é possivel rodar a compilação em plano de fundo, salvando o resultado em um arquivo log. Para isso, ao invez do código acima, use:
+
+./Allwmake.firstInstall >& log_Allwmake.firstInstall&
+---------------------
+
+
+
+Pós-Compilação:
+---------------------
+./Allwmake.firstInstall >& log&
+
+## Reinstale usado o codigo acima. Pode levar alguns minutos. Isso checará qualquer possivel erro. É importante que não se encontre nenhum erro.
+## Voce verá inumeros up to date, isso significa que esta correto.
+--------------------
+
+
+
+Atualizações:
+--------------------
+foam
+git pull
+./Allwmake.firstInstall >& log&
+
+## Sempre mantenha o foam extend atualizado por meio destes codigos. Isso garante bug fixes.
+--------------------
+
+
+
+
+
+REFERÊNCIAS
+
+https://openfoamwiki.net/index.php/Installation/Linux/foam-extend-4.1/Ubuntu
+
+https://openfoamwiki.net/index.php/Installation/Linux/foam-extend-4.1#Installing_from_source_code
+
+https://pingpong.chalmers.se/public/courseId/9769/lang-en/publicPage.do?item=4764601
+
+http://www.tfd.chalmers.se/~hani/wikis/haniWiki/index.php?title=Tips_and_tricks_/_FOAM_/_Installation#FOAM-extend-4.1_NR_with_solids4Foam_and_cfMesh.2C_with_Gcc_at_Tetralith_.28non-root.29.2C_CentOS_7.2C_2021-01-04
+
