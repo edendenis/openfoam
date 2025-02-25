@@ -449,131 +449,6 @@
 #     Se o comando for reconhecido, a instalação foi concluída com sucesso!
 # 
 
-# ### 5.2.1 Adicionando o cabeçalho correto
-# 
-# A função contiguous faz parte da biblioteca `<type_traits>` em `C++`. Tente adicionar o seguinte `include` nos arquivos problemáticos.
-# 
-# 1. **Verifique o caminho do `contiguous.H`** Você encontrou o arquivo em:
-# 
-#     ```
-#     find $WM_PROJECT_DIR -name "contiguous.H"
-#     find $WM_PROJECT_DIR -name "foamTime.H"
-#     find $WM_PROJECT_DIR -name "triSurface.H"
-#     ```
-# 
-#     Se eles não existirem, será necessário reinstalar ou baixar os pacotes faltantes.
-# 
-# 2. **Verificar Permissões**
-# 
-#     Verifique se o compilador tem permissão para acessar o arquivo:
-# 
-#     ```
-#     ls -al /usr/lib/openfoam/openfoam2312/src/OpenFOAM/primitives/traits/contiguous.H
-#     ls -al /usr/lib/openfoam/openfoam2312/src/surfMesh/lnInclude/triSurface.H
-#     ls -al /usr/lib/openfoam/openfoam2312/src/surfMesh/triSurface/triSurface.H
-#     ```
-# 
-# 3. Se necessário, ajuste as permissões:
-# 
-#     ```
-#     sudo chmod 644 /usr/lib/openfoam/openfoam2312/src/OpenFOAM/primitives/traits/contiguous.H
-#     sudo chmod 644 /usr/lib/openfoam/openfoam2312/src/surfMesh/lnInclude/triSurface.H
-#     sudo chmod 644 /usr/lib/openfoam/openfoam2312/src/surfMesh/triSurface/triSurface.H
-#     ```
-# 
-# 4. **Verificar Permissões**
-# 
-#     Verifique se o compilador tem permissão para acessar o arquivo:
-# 
-#     ```
-#     ls -al /usr/lib/openfoam/openfoam2312/src/OpenFOAM/primitives/traits/contiguous.H
-#     ls -al /usr/lib/openfoam/openfoam2312/src/surfMesh/lnInclude/triSurface.H
-#     ls -al /usr/lib/openfoam/openfoam2312/src/surfMesh/triSurface/triSurface.H
-#     ```
-# 
-# 5. **Abra os arquivos abaixo**:
-# 
-#     ```
-#     sudo nano /usr/lib/openfoam/openfoam2312/ThirdParty/cfmesh/meshLibrary/lnInclude/LongList.C
-#     sudo nano /usr/lib/openfoam/openfoam2312/ThirdParty/cfmesh/meshLibrary/lnInclude/LongListI.H
-#     sudo nano /usr/lib/openfoam/openfoam2312/ThirdParty/cfmesh/meshLibrary/lnInclude/DynListI.H
-#     ```
-# 
-#     1.1 Adicione a seguinte linha logo no início desses arquivos (antes de qualquer outra inclusão):
-# 
-#     ```
-#     #include <type_traits>
-#     ```
-# 
-#     Garanta que essa linha esteja antes de qualquer uso da função `contiguous<T>()`.
-# 
-# 6. **Verifique se o diretório `Make` existe**:
-# 
-#     ```
-#     ls -al /usr/lib/openfoam/openfoam2312/ThirdParty/cfmesh/Make
-#     ```
-# 
-# 7. **Crie o diretório `Make`, caso ele não exista**:
-# 
-# 
-#     ```
-#     sudo mkdir -p /usr/lib/openfoam/openfoam2312/ThirdParty/cfmesh/Make
-#     ```
-# 
-#     O parâmetro `-p` garante que o diretório seja criado caso ainda não exista, sem gerar erro.
-# 
-# 8. **Crie ou edite o arquivo `Make/options`**:
-# 
-#     ```
-#     sudo nano /usr/lib/openfoam/openfoam2312/ThirdParty/cfmesh/Make/options
-#     ```
-# 
-# 8. **Insira o seguinte conteúdo no arquivo `Make/options`**:
-# 
-#     ```
-#     EXE_INC = \
-#         -I$(WM_PROJECT_DIR)/src/OpenFOAM/lnInclude \
-#         -I$(WM_PROJECT_DIR)/src/OpenFOAM/primitives/traits \
-#         -I$(WM_PROJECT_DIR)/src/OSspecific/POSIX/lnInclude \
-#         -I$(WM_PROJECT_DIR)/src/triSurface/lnInclude \
-#         -I$(WM_PROJECT_DIR)/src/edgeMesh/lnInclude \
-#         -I$(WM_PROJECT_DIR)/src/meshTools/lnInclude
-# 
-#     EXE_LIBS = \
-#         -L$(FOAM_LIBBIN) \
-#         -lOpenFOAM \
-#         -lfvMesh
-#     ```
-# 
-#     Isso inclui os diretórios onde o contiguous.H foi encontrado e outras dependências necessárias.
-# 
-# 9. **Salve e feche o arquivo**:
-# 
-#     * Pressione `CTRL + O` para salvar.
-# 
-#     * Pressione `CTRL + X` para sair do editor.
-# 
-# 10. **Limpe e recarregue o ambiente do `OpenFOAM`**:
-# 
-#     ```
-#     source $WM_PROJECT_DIR/etc/bashrc
-#     wclean all
-#     ```
-# 
-# 11. **Compile novamente o `cfmesh`**:
-# 
-#     ```
-#     wmake all
-#     ```
-# 
-#     Ou para usar todos os núcleos do processador:
-# 
-#     ```
-#     ./Allwmake -j$(nproc)
-#     ```
-# 
-# 
-
 # ### 5.2.1 Verificando a Instalação
 # 
 # Após instalar, verifique se os executáveis do `cfMesh` estão disponíveis:
@@ -587,50 +462,173 @@
 # Se os caminhos forem retornados corretamente, significa que o `cfMesh` está pronto para uso.
 # 
 
-# #### 5.2.2 Corrigir o `tetgenMesh`
-# 
-# O `tetgenMesh` pode não ter sido incluído por padrão no repositório do `cfMesh` que você utilizou ou não foi compilado corretamente.
-# 
-# 1. **Acesse o diretório do `cfMesh`**:
-# 
-# ```
-# cd /usr/lib/openfoam/openfoam2312/ThirdParty/integration-cfmesh
-# ```
-# 
-# 2. Verificar se o código-fonte do `tetgenMesh` está presente:
-# 
-#     ```
-#     find /usr/lib/openfoam/openfoam2312/ThirdParty/integration-cfmesh -type f -name "tetMesh*"
-#     ```
-# 
-#     * **Se o arquivo existir**: O problema pode ter sido durante a compilação. Rode novamente o comando:
-# 
-#     ```
-#     cd /usr/lib/openfoam/openfoam2312/ThirdParty/integration-cfmesh
-#     source $FOAM_ETC/bashrc
-#     ./Allwmake -j$(nproc)
-#     ```
-# 
-#     * **Se o código-fonte não existir**: Pode ser necessário instalar o tetgen manualmente:
-# 
-#     ```
-#     sudo apt install tetgen -y
-#     ```
-
 # #### 5.2.2 Testando o `cfMesh` com um Caso de Exemplo
 # 
-# Você pode rodar um exemplo simples para testar se o `cfMesh` está funcionando corretamente:
+# Você pode rodar um exemplo simples para testar se o `cfMesh` está funcionando corretamente. Se a malha for gerada corretamente, o `cfMesh` está pronto para uso.
+# 
+# 1. **Preparar o Ambiente**: Ative o `OpenFOAM` e configure o ambiente:
+# 
+# ```
+# source /usr/lib/openfoam/openfoam2312/etc/bashrc
+# ```
+# 
+# 2. **Criar Diretório de Teste**:
 # 
 # ```
 # sudo mkdir -p $FOAM_RUN/cfmesh_test
 # cd $FOAM_RUN/cfmesh_test
-# sudo cp -r $FOAM_TUTORIALS/mesh/cfmesh/simple_box .
-# cd simple_box
-# cartesianMesh
 # ```
 # 
-# Se a malha for gerada corretamente, o `cfMesh` está pronto para uso.
+# 3. **Copiar os Tutoriais do cfMesh**: Os tutoriais estão em `/usr/lib/openfoam/openfoam2312/ThirdParty/integration-cfmesh/tutorials/`:
 # 
+# Copie o exemplo `cartesianMesh` para o diretório de teste:
+# 
+# ```
+# sudo cp -r /usr/lib/openfoam/openfoam2312/ThirdParty/integration-cfmesh/tutorials/cartesianMesh .
+# ```
+# 
+# 4. **Verifique se o diretório foi copiado corretamente**: Execute o comando abaixo para verificar se o diretório asmoOctree está no local esperado:
+# 
+#     ```
+#     ls ~/OpenFOAM/edenedfsls-v2312/run/cfmesh_test/cartesianMesh/
+#     ```
+# 
+#     Se o diretório asmoOctree não aparecer, significa que o exemplo não foi copiado corretamente.
+# 
+#     4.1 **(Re)Copiar o diretório de exemplo**: Caso o diretório não esteja presente, recopie o exemplo usando:
+# 
+#     ```
+#     sudo cp -r /usr/lib/openfoam/openfoam2312/ThirdParty/integration-cfmesh/tutorials/cartesianMesh ~/OpenFOAM/edenedfsls-v2312/run/cfmesh_test/
+#     ```
+# 
+#     Verifique novamente com:
+# 
+#     ```
+#     ls ~/OpenFOAM/edenedfsls-v2312/run/cfmesh_test/cartesianMesh/
+#     ```
+# 
+# 5. **Corrijir as permissões (se necessário)**: Se o diretório existir, mas ainda houver problemas de acesso, ajuste as permissões:
+# 
+# ```
+# sudo chown -R $USER:$USER ~/OpenFOAM/edenedfsls-v2312/run/cfmesh_test
+# chmod -R u+rwx ~/OpenFOAM/edenedfsls-v2312/run/cfmesh_test
+# ```
+# 
+# 5. **Escolher o Exemplo para Executar**: Por exemplo, vamos usar o `asmoOctree`:
+# 
+# ```
+# cd ~/OpenFOAM/edenedfsls-v2312/run/cfmesh_test/cartesianMesh/asmoOctree
+# ```
+# 
+# 6. **Agora, execute o comando**:
+# 
+#     ```
+#     cartesianMesh
+#     ```
+# 
+#     Se houver erro de permissão na criação de diretórios (como o `/constant`), use:
+# 
+#     ```
+#     sudo chmod -R u+rwx ~/OpenFOAM/edenedfsls-v2312/run/cfmesh_test/cartesianMesh/asmoOctree
+#     ```
+# 
+#     E depois execute novamente:
+# 
+#     ```
+#     cartesianMesh
+#     ```
+# 
+
+# #### 5.2.3 Verificar a Malha Criada
+# 
+# Após a execução bem-sucedida, visualize a malha usando o `paraFoam`:
+# 
+# 
+# 1. **Verifique se o diretório `constant/` existe**: Execute:
+# 
+#     ```
+#     ls -al ~/OpenFOAM/edenedfsls-v2312/run/cfmesh_test/cartesianMesh/asmoOctree/constant/
+#     ```
+# 
+#     * Se o diretório não existir, crie-o:
+# 
+#     ```
+#     mkdir ~/OpenFOAM/edenedfsls-v2312/run/cfmesh_test/cartesianMesh/asmoOctree/constant/
+#     ```
+# 
+#     * Se o diretório existir mas estiver **vazio**, isso causará o erro. O diretório deve conter um subdiretório `polyMesh` e outros arquivos essenciais.
+# 
+# 2. **Verifique as permissões do diretório**: Corrija as permissões para garantir acesso completo:
+# 
+#     ```
+#     sudo chown -R $USER:$USER ~/OpenFOAM/edenedfsls-v2312/run/cfmesh_test/
+#     chmod -R u+rwX ~/OpenFOAM/edenedfsls-v2312/run/cfmesh_test/
+#     ```
+# 
+# 3. **Verifique se o `polyMesh` foi gerado**: No diretório `constant/`, deve haver um subdiretório `polyMesh` com arquivos como:
+# 
+#     * `points`
+# 
+#     * `faces`
+# 
+#     * `owner`
+# 
+#     * `neighbour`
+# 
+#     * `boundary`
+# 
+#     Verifique com:
+# 
+#     ```
+#     ls ~/OpenFOAM/edenedfsls-v2312/run/cfmesh_test/cartesianMesh/asmoOctree/constant/polyMesh/
+#     ```
+# 
+#     Se esses arquivos estiverem ausentes, reexecute o `cartesianMesh`:
+# 
+#     ```
+#     cartesianMesh
+#     ```
+# 
+# 4. **(Alternativa) Converter para VTK com `foamToVTK`**: 
+# 
+# 
+#     4.1 Para não ocorrer erro de permissão durante o `foamToVTK`, execute:
+# 
+#     ```
+#     sudo chown -R $USER:$USER ~/OpenFOAM/edenedfsls-v2312/run/cfmesh_test/
+#     ```
+#     
+#     4.2 Se o erro persistir ou se preferir abrir o caso diretamente no `ParaView`:
+# 
+#     ```
+#     foamToVTK
+#     ```
+# 
+#     * Os arquivos convertidos serão salvos no diretório:
+# 
+#     ```
+#     ~/OpenFOAM/edenedfsls-v2312/run/cfmesh_test/cartesianMesh/asmoOctree/VTK/
+#     ```
+# 
+#     * No `ParaView`, abra o arquivo `asmoOctree.vtm`.series para visualizar o caso:
+# 
+#     ```
+#     paraview
+#     ```
+# 
+# 5. **Corrigir `PV_PLUGIN_PATH` (opcional, mas recomendado)**: Adicione o caminho dos _plugins_ do `ParaView` ao seu ambiente:
+# 
+#     ```
+#     export PV_PLUGIN_PATH=/usr/lib/x86_64-linux-gnu/paraview-5.10/plugins
+#     ```
+# 
+#     Adicione essa linha ao seu `~/.zshrc` para manter permanente:
+# 
+#     ```
+#     echo 'export PV_PLUGIN_PATH=/usr/lib/x86_64-linux-gnu/paraview-5.10/plugins
+#     ' >> ~/.zshrc
+#     source ~/.zshrc
+#     ```
 
 # ## 5.3 Instalar o `HiSA` (High Speed Aerodynamics)
 # 
@@ -642,12 +640,13 @@
 # 
 # 1. **Teste se o `OpenFOAM` está instalado**:
 # 
-# ```
-# foamInstallationTest
-# ```
+#     ```
+#     foamInstallationTest
+#     ```
 # 
-# Se não estiver instalado, siga os passos desta instalação.
+#     Se não estiver instalado, siga os passos desta instalação.
 # 
+
 # ### 5.3.2 Baixar o código-fonte do `HiSA`
 # 
 # O código-fonte do `HiSA` pode ser obtido no `GitLab` do projeto.
@@ -737,4 +736,10 @@
 # [1] OPENAI. ***Instalação opemfoam ubuntu.*** Disponível em: <https://chatgpt.com/c/67af9ad1-09ec-8002-8552-e371c2edb694> (texto adaptado). ChatGPT. Acessado em: 14/02/2025 14:23.
 # 
 # [2] OPENAI. ***Vs code: editor popular.*** Disponível em: <https://chat.openai.com/c/b640a25d-f8e3-4922-8a3b-ed74a2657e42> (texto adaptado). ChatGPT. Acessado em: 14/02/2025 14:23.
+# 
+# [3] OPENCFD. ***Openfoam**. Disponível em: <https://www.openfoam.com/>. Acessado em: 24/02/2025 22:53
+# 
+# [4] DEVELOP OPENFOAM. **Openfoam**. Disponível em: <https://develop.openfoam.com/Development/openfoam/-/wikis/precompiled/>. Acessado em: 24/02/2025 22:54.
+# 
+# [5] DEVELOP OPENFOAM. **Integration-cfmesh**. Disponível em: <https://develop.openfoam.com/Community/integration-cfmesh>. Acessado em: 24/02/2025 22:56. 
 # 
