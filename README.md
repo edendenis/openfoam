@@ -446,7 +446,52 @@ Se o `cfMesh` não estiver incluído na sua versão do `OpenFOAM`, você pode ba
     Se o comando for reconhecido, a instalação foi concluída com sucesso!
 
 
-### 5.2.1 Verificando a Instalação
+#### Verificar se as variáveis ambiente estão definidas corretamente
+
+1. **Executar o comando**:
+
+    ```
+    echo $FOAM_INST_DIR
+    echo $FOAM_RUN
+    echo $FOAM_TUTORIALS
+    echo $PV_PLUGIN_PATH
+    echo $WM_THIRD_PARTY_DIR
+    echo $WM_PROJECT_USER_DIR
+    ```
+
+    * Se cada um dos comandos retornar um diretório, as variáveis ambiente estão definidas e corretas.
+
+    * Se algum dos comandos **NÃO** retornar um diretório, por exemplo, o `$FOAM_INST_DIR` e o `$WM_PROJECT_USER_DIR`, será necessário incluir no `Terminal`, como segue:
+
+        * Para `Bash`:
+
+            ```
+            export FOAM_INST_DIR=/usr/lib/openfoam
+            export WM_PROJECT_USER_DIR=/home/$USER$/OpenFOAM
+            echo 'export FOAM_INST_DIR=/usr/lib/openfoam' >> ~/.bahrc
+            source ~/.bashrc
+            ```
+
+        * Para `Z Shell`:
+
+            ```
+            export FOAM_INST_DIR=/usr/lib/openfoam
+            export WM_PROJECT_USER_DIR=/home/$USER$/OpenFOAM
+            echo 'export FOAM_INST_DIR=/usr/lib/openfoam' >> ~/.zshrc
+            source ~/.zshrc
+            ```
+
+            * Agora, teste novamente:
+
+            ```
+            echo $FOAM_INST_DIR
+            echo $WM_PROJECT_USER_DIR
+            ```
+
+            Se aparecer `/usr/lib/openfoam` e `/home/$USER$/OpenFOAM`, o problema foi resolvido.
+
+
+#### 5.2.1 Verificando a instalação dos executáveis
 
 Após instalar, verifique se os executáveis do `cfMesh` estão disponíveis:
 
@@ -465,32 +510,32 @@ Você pode rodar um exemplo simples para testar se o `cfMesh` está funcionando 
 
 1. **Preparar o Ambiente**: Ative o `OpenFOAM` e configure o ambiente:
 
-```
-source /usr/lib/openfoam/openfoam2312/etc/bashrc
-```
+    ```
+    source /usr/lib/openfoam/openfoam2312/etc/bashrc
+    ```
 
 2. **Criar Diretório de Teste**:
 
-```
-sudo mkdir -p $FOAM_RUN/cfmesh_test
-cd $FOAM_RUN/cfmesh_test
-```
+    ```
+    sudo mkdir -p $FOAM_RUN/cfmesh_test
+    cd $FOAM_RUN/cfmesh_test
+    ```
 
 3. **Copiar os Tutoriais do cfMesh**: Os tutoriais estão em `/usr/lib/openfoam/openfoam2312/ThirdParty/integration-cfmesh/tutorials/`:
 
-Copie o exemplo `cartesianMesh` para o diretório de teste:
-
-```
-sudo cp -r /usr/lib/openfoam/openfoam2312/ThirdParty/integration-cfmesh/tutorials/cartesianMesh .
-```
-
-4. **Verifique se o diretório foi copiado corretamente**: Execute o comando abaixo para verificar se o diretório asmoOctree está no local esperado:
+    Copie o exemplo `cartesianMesh` para o diretório de teste:
 
     ```
-    ls ~/OpenFOAM/edenedfsls-v2312/run/cfmesh_test/cartesianMesh/
+    sudo cp -r /usr/lib/openfoam/openfoam2312/ThirdParty/integration-cfmesh/tutorials/cartesianMesh .
     ```
 
-    Se o diretório asmoOctree não aparecer, significa que o exemplo não foi copiado corretamente.
+4. **Verifique se o diretório foi copiado corretamente**: Execute o comando abaixo para verificar se o diretório `asmoOctree` está no local esperado:
+
+    ```
+    ls -al ~/OpenFOAM/edenedfsls-v2312/run/cfmesh_test/cartesianMesh/
+    ```
+
+    Se o diretório `asmoOctree` não aparecer, significa que o exemplo não foi copiado corretamente.
 
     4.1 **(Re)Copiar o diretório de exemplo**: Caso o diretório não esteja presente, recopie o exemplo usando:
 
@@ -501,21 +546,21 @@ sudo cp -r /usr/lib/openfoam/openfoam2312/ThirdParty/integration-cfmesh/tutorial
     Verifique novamente com:
 
     ```
-    ls ~/OpenFOAM/edenedfsls-v2312/run/cfmesh_test/cartesianMesh/
+    ls -al ~/OpenFOAM/edenedfsls-v2312/run/cfmesh_test/cartesianMesh/
     ```
 
 5. **Corrijir as permissões (se necessário)**: Se o diretório existir, mas ainda houver problemas de acesso, ajuste as permissões:
 
-```
-sudo chown -R $USER:$USER ~/OpenFOAM/edenedfsls-v2312/run/cfmesh_test
-chmod -R u+rwx ~/OpenFOAM/edenedfsls-v2312/run/cfmesh_test
-```
+    ```
+    sudo chown -R $USER:$USER ~/OpenFOAM/edenedfsls-v2312/run/cfmesh_test
+    chmod -R u+rwx ~/OpenFOAM/edenedfsls-v2312/run/cfmesh_test
+    ```
 
 5. **Escolher o Exemplo para Executar**: Por exemplo, vamos usar o `asmoOctree`:
 
-```
-cd ~/OpenFOAM/edenedfsls-v2312/run/cfmesh_test/cartesianMesh/asmoOctree
-```
+    ```
+    cd ~/OpenFOAM/edenedfsls-v2312/run/cfmesh_test/cartesianMesh/asmoOctree
+    ```
 
 6. **Agora, execute o comando**:
 
@@ -564,20 +609,22 @@ Após a execução bem-sucedida, visualize a malha usando o `paraFoam`:
 
 3. **Verifique se o `polyMesh` foi gerado**: No diretório `constant/`, deve haver um subdiretório `polyMesh` com arquivos como:
 
-    * `points`
+    * `boundary`
 
     * `faces`
+    
+    * `meshMetaDict`
+    
+    * `neighbour`
 
     * `owner`
 
-    * `neighbour`
-
-    * `boundary`
+    * `points`
 
     Verifique com:
 
     ```
-    ls ~/OpenFOAM/edenedfsls-v2312/run/cfmesh_test/cartesianMesh/asmoOctree/constant/polyMesh/
+    ls -al ~/OpenFOAM/edenedfsls-v2312/run/cfmesh_test/cartesianMesh/asmoOctree/constant/polyMesh/
     ```
 
     Se esses arquivos estiverem ausentes, reexecute o `cartesianMesh`:
@@ -607,11 +654,13 @@ Após a execução bem-sucedida, visualize a malha usando o `paraFoam`:
     ~/OpenFOAM/edenedfsls-v2312/run/cfmesh_test/cartesianMesh/asmoOctree/VTK/
     ```
 
-    * No `ParaView`, abra o arquivo `asmoOctree.vtm`.series para visualizar o caso:
+    * No `ParaView`, abra o arquivo `asmoOctree_0.vtm`.series para visualizar o caso:
 
     ```
     paraview
     ```
+
+    4.3 Dentro do `paraview`, clicar em `Apply`.
 
 5. **Corrigir `PV_PLUGIN_PATH` (opcional, mas recomendado)**: Adicione o caminho dos _plugins_ do `ParaView` ao seu ambiente:
 
@@ -650,71 +699,104 @@ O código-fonte do `HiSA` pode ser obtido no `GitLab` do projeto.
 
 1️. **Navegue até a pasta do `OpenFOAM`**:
 
-```
-cd $WM_PROJECT_USER_DIR
-```
+    ```
+    cd $WM_THIRD_PARTY_DIR
+    ```
 
-Se a variável `$WM_PROJECT_USER_DIR` não estiver definida, tente:
+    Se a variável `$WM_THIRD_PARTY_DIR` não retornar nada, ela pode não estar definida, tente:
 
-```
-cd $HOME/OpenFOAM
-```
+    ```
+    cd /usr/lib/openfoam/openfoam2312/ThirdParty
+    ```
 
 2. **Baixar o `HiSA` do repositório oficial**:
 
-```
-git clone https://gitlab.com/hisa/hisa.git
-```
+    ```
+    sudo git clone https://gitlab.com/hisa/hisa.git
+    ```
 
 3️. **Acesse a pasta do `HiSA`**:
 
-```
-cd hisa
-```
+    ```
+    cd hisa
+    ```
 
 
 #### 5.3.3 Configurar e Compilar o `HiSA`
 
-Agora, compile o código dentro do `OpenFOAM`.
+1. **Configure o ambiente antes da compilação**:
 
-1. **Configurar o ambiente do `OpenFOAM`**:
-
-```
-source $FOAM_ETC/bashrc
-```
-
-2. **Compilar o `HiSA`**:
+Se o `OpenFOAM` não estiver ativado, faça:
 
 ```
-wmake libso
+source /usr/lib/openfoam/openfoam2312/etc/bashrc
+export WM_THIRD_PARTY_DIR=/usr/lib/openfoam/openfoam2312/ThirdParty
 ```
 
-Isso compilará o `HiSA` como uma biblioteca compartilhada.
-
-3️. **Compilar os solvers do `HiSA`**:
+2. Agora, para garantir que o `HiSA` seja compilado corretamente, verifique as dependências:
 
 ```
-cd applications/solverss
-wmake
+./Allclean
+./Allwmake -j$(nproc)
 ```
 
-**Nota**: Se houver erro de dependências, verifique se você tem pacotes como build-`essential` e cmake instalados:
+Se houver erro de permissão, tente:
 
 ```
-sudo apt install -y build-essential cmake
+sudo -E bash -c "source /usr/lib/openfoam/openfoam2312/etc/bashrc && ./Allclean && ./Allwmake -j$(nproc)"
 ```
 
+3. **Verifique se o binário foi gerado corretamente**: Liste o diretório de binários do `HiSA`:
+
+    ```
+    ls -al ~/OpenFOAM/edenedfsls-v2312/platforms/linux64GccDPInt32Opt/bin/
+    ```
+    
+    Se `hisaFoam`, `hisa` ou `HiSA` estiver lá, continue com o próximo passo.
+
+    Se o binário não estiver lá, recompile o `HiSA`:
+
+    ```
+    cd /usr/lib/openfoam/openfoam2312/ThirdParty/hisa
+    ./Allclean
+    ./Allwmake -j$(nproc)
+    ```
+
+4. **Adicione o binário ao `PATH`**: Execute, para tornar isso permanente, adicione ao `~/.zshrc`:
+
+    ```
+    echo 'export PATH=~/OpenFOAM/edenedfsls-v2312/platforms/linux64GccDPInt32Opt/bin:$PATH' >> ~/.zshrc
+    source ~/.zshrc
+    ```
+
+    Agora, teste novamente:
+
+    ```
+    which hisa
+    ```
+
+    Se `hisa` aparecer no `which`, significa que a instalação está correta.
+    
 
 #### 5.3.4 Testar a Instalação
 
-Depois de compilar, teste se o `HiSA` está instalado corretamente:
+1. Depois de compilar, teste se o `HiSA` está instalado corretamente:
 
-```
-hisaFoam -help
-```
+    ```
+    hisa -help
+    ```
 
-Se o comando for reconhecido, significa que o `HiSA` foi instalado com sucesso.
+2. **Confirme se o `hisa` reconhece o `OpenFOAM`**:
 
+Para garantir que o ambiente `OpenFOAM` está bem configurado para o `hisa`, execute:
+
+    ```
+    hisa -version
+    ```
+
+    Isso deve mostrar a versão do `hisa` e do `OpenFOAM`.
+
+Se `hisa` for reconhecido e rodar corretamente, significa que a instalação foi bem-sucedida! 
 
 #### 5.3.5 Executar um Caso de Teste
 
@@ -728,6 +810,10 @@ cd mach5_wedge
 hisaFoam
 ```
 
+## 6. Encontrar os executáveis das aplicações para o `FreeCAD`
+
+
+
 ## Referências
 
 [1] OPENAI. ***Instalação opemfoam ubuntu.*** Disponível em: <https://chatgpt.com/c/67af9ad1-09ec-8002-8552-e371c2edb694> (texto adaptado). ChatGPT. Acessado em: 14/02/2025 14:23.
@@ -739,4 +825,6 @@ hisaFoam
 [4] DEVELOP OPENFOAM. **Openfoam**. Disponível em: <https://develop.openfoam.com/Development/openfoam/-/wikis/precompiled/>. Acessado em: 24/02/2025 22:54.
 
 [5] DEVELOP OPENFOAM. **Integration-cfmesh**. Disponível em: <https://develop.openfoam.com/Community/integration-cfmesh>. Acessado em: 24/02/2025 22:56. 
+
+[6] OPENCFD. **Openfoam: manual pages v1912 - the opensource cfd toolbox - cartesianmesh(1)**. Disponível em: <https://www.openfoam.com/documentation/guides/v1912/man/cartesianMesh.html>. Acessado em : 26/02/2025 09:14.
 
