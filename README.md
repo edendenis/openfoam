@@ -453,18 +453,174 @@ Se os caminhos forem retornados corretamente, significa que o `cfMesh` está pro
 
 #### 5.2.2 Testando o `cfMesh` com um Caso de Exemplo
 
-Você pode rodar um exemplo simples para testar se o `cfMesh` está funcionando corretamente:
+Você pode rodar um exemplo simples para testar se o `cfMesh` está funcionando corretamente. Se a malha for gerada corretamente, o `cfMesh` está pronto para uso.
 
-```
-sudo mkdir -p $FOAM_RUN/cfmesh_test
-cd $FOAM_RUN/cfmesh_test
-sudo cp -r /usr/lib/openfoam/openfoam2312/ThirdParty/integration-cfmesh/tutorials/cartesianMesh .
-cd cartesianMesh
-cartesianMesh
-```
+1. **Preparar o Ambiente**: Ative o `OpenFOAM` e configure o ambiente:
 
-Se a malha for gerada corretamente, o `cfMesh` está pronto para uso.
+    ```
+    source /usr/lib/openfoam/openfoam2312/etc/bashrc
+    ```
 
+2. **Criar Diretório de Teste**:
+
+    ```
+    sudo mkdir -p $FOAM_RUN/cfmesh_test
+    cd $FOAM_RUN/cfmesh_test
+    ```
+
+3. **Copiar os Tutoriais do cfMesh**: Os tutoriais estão em `/usr/lib/openfoam/openfoam2312/ThirdParty/integration-cfmesh/tutorials/`:
+
+    Copie o exemplo `cartesianMesh` para o diretório de teste:
+
+    ```
+    sudo cp -r /usr/lib/openfoam/openfoam2312/ThirdParty/integration-cfmesh/tutorials/cartesianMesh .
+    ```
+
+4. **Verifique se o diretório foi copiado corretamente**: Execute o comando abaixo para verificar se o diretório `asmoOctree` está no local esperado:
+
+    ```
+    ls -al ~/OpenFOAM/edenedfsls-v2312/run/cfmesh_test/cartesianMesh/
+    ```
+
+    Se o diretório `asmoOctree` não aparecer, significa que o exemplo não foi copiado corretamente.
+
+    4.1 **(Re)Copiar o diretório de exemplo**: Caso o diretório não esteja presente, recopie o exemplo usando:
+
+    ```
+    sudo cp -r /usr/lib/openfoam/openfoam2312/ThirdParty/integration-cfmesh/tutorials/cartesianMesh ~/OpenFOAM/edenedfsls-v2312/run/cfmesh_test/
+    ```
+
+    Verifique novamente com:
+
+    ```
+    ls -al ~/OpenFOAM/edenedfsls-v2312/run/cfmesh_test/cartesianMesh/
+    ```
+
+5. **Corrijir as permissões (se necessário)**: Se o diretório existir, mas ainda houver problemas de acesso, ajuste as permissões:
+
+    ```
+    sudo chown -R $USER:$USER ~/OpenFOAM/edenedfsls-v2312/run/cfmesh_test
+    chmod -R u+rwx ~/OpenFOAM/edenedfsls-v2312/run/cfmesh_test
+    ```
+
+5. **Escolher o Exemplo para Executar**: Por exemplo, vamos usar o `asmoOctree`:
+
+    ```
+    cd ~/OpenFOAM/edenedfsls-v2312/run/cfmesh_test/cartesianMesh/asmoOctree
+    ```
+
+6. **Agora, execute o comando**:
+
+    ```
+    cartesianMesh
+    ```
+
+    Se houver erro de permissão na criação de diretórios (como o `/constant`), use:
+
+    ```
+    sudo chmod -R u+rwx ~/OpenFOAM/edenedfsls-v2312/run/cfmesh_test/cartesianMesh/asmoOctree
+    ```
+
+    E depois execute novamente:
+
+    ```
+    cartesianMesh
+    ```
+
+#### 5.2.3 Verificar a Malha Criada
+
+Após a execução bem-sucedida, visualize a malha usando o `paraFoam`:
+
+
+1. **Verifique se o diretório `constant/` existe**: Execute:
+
+    ```
+    ls -al ~/OpenFOAM/edenedfsls-v2312/run/cfmesh_test/cartesianMesh/asmoOctree/constant/
+    ```
+
+    * Se o diretório não existir, crie-o:
+
+    ```
+    mkdir ~/OpenFOAM/edenedfsls-v2312/run/cfmesh_test/cartesianMesh/asmoOctree/constant/
+    ```
+
+    * Se o diretório existir mas estiver **vazio**, isso causará o erro. O diretório deve conter um subdiretório `polyMesh` e outros arquivos essenciais.
+
+2. **Verifique as permissões do diretório**: Corrija as permissões para garantir acesso completo:
+
+    ```
+    sudo chown -R $USER:$USER ~/OpenFOAM/edenedfsls-v2312/run/cfmesh_test/
+    chmod -R u+rwX ~/OpenFOAM/edenedfsls-v2312/run/cfmesh_test/
+    ```
+
+3. **Verifique se o `polyMesh` foi gerado**: No diretório `constant/`, deve haver um subdiretório `polyMesh` com arquivos como:
+
+    * `boundary`
+
+    * `faces`
+    
+    * `meshMetaDict`
+    
+    * `neighbour`
+
+    * `owner`
+
+    * `points`
+
+    Verifique com:
+
+    ```
+    ls -al ~/OpenFOAM/edenedfsls-v2312/run/cfmesh_test/cartesianMesh/asmoOctree/constant/polyMesh/
+    ```
+
+    Se esses arquivos estiverem ausentes, reexecute o `cartesianMesh`:
+
+    ```
+    cartesianMesh
+    ```
+
+4. **(Alternativa) Converter para VTK com `foamToVTK`**: 
+
+
+    4.1 Para não ocorrer erro de permissão durante o `foamToVTK`, execute:
+
+    ```
+    sudo chown -R $USER:$USER ~/OpenFOAM/edenedfsls-v2312/run/cfmesh_test/
+    ```
+    
+    4.2 Se o erro persistir ou se preferir abrir o caso diretamente no `ParaView`:
+
+    ```
+    foamToVTK
+    ```
+
+    * Os arquivos convertidos serão salvos no diretório:
+
+    ```
+    ~/OpenFOAM/edenedfsls-v2312/run/cfmesh_test/cartesianMesh/asmoOctree/VTK/
+    ```
+
+    * No `ParaView`, abra o arquivo `asmoOctree_0.vtm`.series para visualizar o caso:
+
+    ```
+    paraview
+    ```
+
+    4.3 Dentro do `paraview`, clicar em `Apply`.
+
+5. **Corrigir `PV_PLUGIN_PATH` (opcional, mas recomendado)**: Adicione o caminho dos _plugins_ do `ParaView` ao seu ambiente:
+
+    ```
+    export PV_PLUGIN_PATH=/usr/lib/x86_64-linux-gnu/paraview-5.10/plugins
+    ```
+
+    Adicione essa linha ao seu `~/.zshrc` para manter permanente:
+
+    ```
+    echo 'export PV_PLUGIN_PATH=/usr/lib/x86_64-linux-gnu/paraview-5.10/plugins
+    ' >> ~/.zshrc
+    source ~/.zshrc
+    ```
 
 ## 5.3 Instalar o `HiSA` (High Speed Aerodynamics)
 
@@ -567,7 +723,7 @@ cd mach5_wedge
 hisaFoam
 ```
 
-## 6. Instalar e configurar o MPI
+## 6. Instalar e configurar o Message Passing Interface (MPI)
 
 Se o erro `MPI was not found. Parallel execution will not be possible.` isso indica que o Message Passing Interface (MPI) não está instalado corretamente ou não está acessível no ambiente do OpenFOAM.
 
