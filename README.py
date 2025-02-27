@@ -195,7 +195,7 @@
 # 
 #     ```
 #     sudo apt update
-#     sudo apt install -y docker.io
+#     sudo apt install docker.io -y
 #     ```
 # 
 # 2. Após a instalação, verifique se o `docker` foi instalado corretamente:
@@ -380,9 +380,9 @@
 # 
 # 3. **Verifique**:
 #     
-#         ```
-#         echo $WM_THIRD_PARTY_DIR
-#         ```
+#     ```
+#     echo $WM_THIRD_PARTY_DIR
+#     ```
 # 
 # 4. **Navegue até a pasta de terceiros do `OpenFOAM`**:
 # 

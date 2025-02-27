@@ -192,7 +192,7 @@ Para instalar o `Docker` no `Linux Ubuntu`, siga os passos abaixo:
 
     ```
     sudo apt update
-    sudo apt install -y docker.io
+    sudo apt install docker.io -y
     ```
 
 2. Após a instalação, verifique se o `docker` foi instalado corretamente:
@@ -377,9 +377,9 @@ Se o `cfMesh` não estiver incluído na sua versão do `OpenFOAM`, você pode ba
 
 3. **Verifique**:
     
-        ```
-        echo $WM_THIRD_PARTY_DIR
-        ```
+    ```
+    echo $WM_THIRD_PARTY_DIR
+    ```
 
 4. **Navegue até a pasta de terceiros do `OpenFOAM`**:
 
