@@ -316,7 +316,7 @@ Se você já tem o `OpenFOAM` instalado, pode verificar se o `cfMesh` já está 
 Se o comando for reconhecido, então o `cfMesh` está funcionando corretamente.
 
 
-### 5.2 Instalando o `cfMesh` Manualmente
+### 5.2 Instalando o `cfMesh` Manualmente (opcional, mas recomendado)
 
 Se o `cfMesh` não estiver incluído na sua versão do `OpenFOAM`, você pode baixá-lo e compilá-lo manualmente.
 
@@ -622,7 +622,7 @@ Após a execução bem-sucedida, visualize a malha usando o `paraFoam`:
     source ~/.zshrc
     ```
 
-## 5.3 Instalar o `HiSA` (High Speed Aerodynamics)
+## 5.3 Instalar o `HiSA` (High Speed Aerodynamics) (opcional, mas recomendado)
 
 O `HiSA` (High Speed Aerodynamics) é um solver de alta velocidade para `OpenFOAM`, especializado em escoamentos compressíveis. Ele não está incluído na distribuição padrão do `OpenFOAM`, então precisa ser instalado manualmente.
 
@@ -961,11 +961,6 @@ O `wmake` é essencial para compilar bibliotecas no `OpenFOAM`. Vamos verificar 
     ```
 
 Se `wmake` agora estiver funcionando.
-
-
-```python
-
-```
 
 ## 8. Encontrar os executáveis das aplicações para o `FreeCAD`
 
