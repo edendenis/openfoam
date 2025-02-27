@@ -962,6 +962,92 @@ O `wmake` é essencial para compilar bibliotecas no `OpenFOAM`. Vamos verificar 
 
 Se `wmake` agora estiver funcionando.
 
+
+```python
+
+```
+
+## 8. Encontrar os executáveis das aplicações para o `FreeCAD`
+
+### 8.1 Verificar onde estão os executáveis do `OpenFOAM`
+
+1. **Verificar onde estão os executáveis do `OpenFOAM`**: Para encontrar os executáveis do OpenFOAM no seu sistema, use:
+
+    ```
+    which openfoam
+    which paraview
+    which gmsh
+    which docker
+    which cartesianMesh
+    which hisa
+    ```
+
+    Se não encontrar nada, tente listar os arquivos na pasta `/usr/lib/openfoam/`:
+
+    ```
+    ls -al /usr/lib/openfoam/
+    ```
+
+    Ou procure por todos os binários do `OpenFOAM`:
+
+    ```
+    find /usr -type f -name "openfoam*" 2>/dev/null
+    find /usr -type f -name "paraview*" 2>/dev/null
+    find /usr -type f -name "paraFoam" 2>/dev/null
+    find /usr -type f -name "docker" 2>/dev/null
+    find /usr -type f -name "cartesianMesh" 2>/dev/null
+    find /usr -type f -name "hisa" 2>/dev/null
+    ```
+    
+    Se o `OpenFOAM` estiver instalado em uma pasta personalizada, você pode precisar adicionar o caminho correto.
+
+
+### 8.2 Criar um Alias para `OpenFOAM`
+
+21. **Criar um Alias para `OpenFOAM`**: Se os binários do `OpenFOAM` estiverem localizados, por exemplo, em `/usr/lib/openfoam/openfoam2312/bin`, crie um alias adicionando ao seu `.zshrc` ou `.bashrc`:
+
+    ```
+    echo "alias openfoam='source /usr/lib/openfoam/openfoam2312/etc/bashrc'" >> ~/.zshrc
+    ```
+
+2. Para ativar imediatamente, execute:
+
+    ```
+    source ~/.zshrc
+    ```
+
+    * Se estiver usando bash:
+
+    ```
+    echo "alias openfoam='source /usr/lib/openfoam/openfoam2312/etc/bashrc'" >> ~/.bashrc
+    source ~/.bashrc
+    ```
+
+    Agora, sempre que quiser carregar o `OpenFOAM`, basta digitar:
+
+    ```
+    openfoam
+    ```
+
+    Isso configurará o ambiente corretamente e permitirá rodar comandos como cartesianMesh e paraFoam sem precisar carregar manualmente o bashrc toda vez.
+
+3. Se precisar testar, rode:
+
+    ```
+    openfoam
+    which paraFoam
+    which cartesianMesh
+    ```
+
+    Se ainda não funcionar, pode ser necessário adicionar o caminho dos binários manualmente ao $PATH:
+
+    ```
+    echo 'export PATH=$PATH:/usr/lib/openfoam/openfoam2312/bin' >> ~/.zshrc
+    source ~/.zshrc
+    ```
+
+Agora você deve conseguir rodar `cartesianMesh` e `paraFoam` normalmente.
+
 ## Referências
 
 [1] OPENAI. ***Instalação opemfoam ubuntu.*** Disponível em: <https://chatgpt.com/c/67af9ad1-09ec-8002-8552-e371c2edb694> (texto adaptado). ChatGPT. Acessado em: 14/02/2025 14:23.
