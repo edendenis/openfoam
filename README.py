@@ -274,23 +274,33 @@
 #     sudo apt install gmsh -y
 #     ```
 # 
-# **Desvantagem**: Pode não ser a versão mais recente.
+# 2. Verificar em qual diretório o `gmsh` está instalado, descubra com:
 # 
-# 2. **Para verificar a versão instalada**:
+#     ```
+#     which gmsh
+#     ```
+# 
+# 3. Depois, aplique o comando chmod para permitir a execução.
+# 
+#     ```
+#     sudo chmod +x /usr/bin/gmsh
+#     ```
+# 
+# 4. **Para verificar a versão instalada**:
 # 
 #     ```
 #     gmsh --version
 #     ```
 # 
-# 3. **Abrir o `Gmsh` com Interface Gráfica (GUI)**:
+# 5. **Abrir o `Gmsh` com Interface Gráfica (GUI)**:
 # 
-# Se você instalou o `Gmsh` corretamente, pode abrir a interface gráfica com o seguinte comando no terminal:
+#     Se você instalou o `Gmsh` corretamente, pode abrir a interface gráfica com o seguinte comando no terminal:
 # 
-# ```
-# gmsh
-# ```
+#     ```
+#     gmsh
+#     ```
 # 
-# Se a instalação estiver correta, a interface do `Gmsh` será exibida.
+#     Se a instalação estiver correta, a interface do `Gmsh` será exibida.
 # 
 # Alternativamente, você também pode procurar `"Gmsh"` no menu de aplicativos do seu ambiente gráfico (`XFCE`, `GNOME`, `KDE` etc.).
 
