@@ -468,157 +468,6 @@
 # 
 # Se a malha for gerada corretamente, o `cfMesh` está pronto para uso.
 # 
-# 🟡 1️⃣ Preparar o Ambiente
-# Ative o OpenFOAM e configure o ambiente:
-# 
-# bash
-# Copy
-# Edit
-# source /usr/lib/openfoam/openfoam2312/etc/bashrc
-# 📁 2️⃣ Criar Diretório de Teste
-# bash
-# Copy
-# Edit
-# sudo mkdir -p $FOAM_RUN/cfmesh_test
-# cd $FOAM_RUN/cfmesh_test
-# 📂 3️⃣ Copiar os Tutoriais do cfMesh
-# Os tutoriais estão em:
-# 
-# swift
-# Copy
-# Edit
-# /usr/lib/openfoam/openfoam2312/ThirdParty/integration-cfmesh/tutorials/
-# Copie o exemplo cartesianMesh para o diretório de teste:
-# 
-# bash
-# Copy
-# Edit
-# sudo cp -r /usr/lib/openfoam/openfoam2312/ThirdParty/integration-cfmesh/tutorials/cartesianMesh .
-# 🚶 4️⃣ Escolha o Exemplo para Executar
-# Por exemplo, vamos usar o asmoOctree:
-# 
-# bash
-# Copy
-# Edit
-# cd ~/OpenFOAM/edenedfsls-v2312/run/cfmesh_test/cartesianMesh/asmoOctree
-# ⚙️ 5️⃣ Corrigir Permissões (Se Necessário)
-# Se você enfrentar erros de permissão, rode:
-# 
-# bash
-# Copy
-# Edit
-# sudo chown -R $USER:$USER ~/OpenFOAM/edenedfsls-v2312/run/cfmesh_test
-# chmod -R u+rwx ~/OpenFOAM/edenedfsls-v2312/run/cfmesh_test
-# 🏃 6️⃣ Executar o cartesianMesh
-# Agora, execute o comando:
-# 
-# bash
-# Copy
-# Edit
-# cartesianMesh
-# 💡 Se houver erro de permissão na criação de diretórios (como o /constant), use:
-# 
-# bash
-# Copy
-# Edit
-# sudo chmod -R u+rwx ~/OpenFOAM/edenedfsls-v2312/run/cfmesh_test/cartesianMesh/asmoOctree
-# E depois execute novamente:
-# 
-# bash
-# Copy
-# Edit
-# cartesianMesh
-# 🟢 7️⃣ Verificar a Malha Criada
-# Após a execução bem-sucedida, visualize a malha usando o paraFoam:
-# 
-# bash
-# Copy
-# Edit
-# paraFoam
-# Ou use:
-# 
-# bash
-# Copy
-# Edit
-# foamToVTK
-# paraview
-# 🛡️ Dicas Adicionais
-# Se for rodar em paralelo, use decomposePar e mpirun.
-# Para limpar o caso e rodar novamente, execute:
-# bash
-# Copy
-# Edit
-# ./Allclean
-# 
-# 
-
-# ✅ 1️⃣ Verifique se o diretório constant/ existe
-# Execute:
-# 
-# bash
-# Copy
-# Edit
-# ls -al ~/OpenFOAM/edenedfsls-v2312/run/cfmesh_test/cartesianMesh/asmoOctree/constant/
-# Se o diretório não existir, crie:
-# 
-# bash
-# Copy
-# Edit
-# mkdir ~/OpenFOAM/edenedfsls-v2312/run/cfmesh_test/cartesianMesh/asmoOctree/constant/
-# Se o diretório existir mas estiver vazio, isso causará o erro. O diretório deve conter um subdiretório polyMesh e outros arquivos essenciais.
-# 
-# ✅ 2️⃣ Verifique as permissões do diretório
-# Corrija as permissões para garantir acesso completo:
-# 
-# bash
-# Copy
-# Edit
-# sudo chown -R $USER:$USER ~/OpenFOAM/edenedfsls-v2312/run/cfmesh_test/
-# chmod -R u+rwX ~/OpenFOAM/edenedfsls-v2312/run/cfmesh_test/
-# ✅ 3️⃣ Verifique se o polyMesh foi gerado
-# No diretório constant/, deve haver um subdiretório polyMesh com arquivos como:
-# 
-# points
-# faces
-# owner
-# neighbour
-# boundary
-# Verifique com:
-# 
-# bash
-# Copy
-# Edit
-# ls ~/OpenFOAM/edenedfsls-v2312/run/cfmesh_test/cartesianMesh/asmoOctree/constant/polyMesh/
-# Se esses arquivos estiverem ausentes, reexecute o cartesianMesh:
-# 
-# bash
-# Copy
-# Edit
-# cartesianMesh
-# ✅ 4️⃣ (Alternativa) Converter para VTK com foamToVTK
-# Se o erro persistir, converta os arquivos para VTK:
-# 
-# bash
-# Copy
-# Edit
-# foamToVTK
-# paraview
-# No ParaView, abra os arquivos .vtk gerados em VTK para visualizar o caso.
-# 
-# ✅ 5️⃣ Corrigir PV_PLUGIN_PATH (opcional, mas recomendado)
-# Adicione o caminho dos plugins do ParaView ao seu ambiente:
-# 
-# bash
-# Copy
-# Edit
-# export PV_PLUGIN_PATH=/usr/lib/paraview/plugins
-# Adicione essa linha ao seu ~/.zshrc para manter permanente:
-# 
-# bash
-# Copy
-# Edit
-# echo 'export PV_PLUGIN_PATH=/usr/lib/paraview/plugins' >> ~/.zshrc
-# source ~/.zshrc
 
 # ## 5.3 Instalar o `HiSA` (High Speed Aerodynamics)
 # 
@@ -768,6 +617,49 @@
 #     ```
 # 
 # Se o comando exibir a versão corretamente, está tudo funcionando.
+
+# ## 7. Verificar o `wmake`
+# 
+# O `wmake` é essencial para compilar bibliotecas no `OpenFOAM`. Vamos verificar se ele está realmente acessível.
+# 
+# 1️. **Testar se o `wmake` está disponível**
+# 
+#     ```
+#     which wmake
+#     ```
+# 
+#     Se o comando retornar algo como `/usr/lib/openfoam/openfoam2312/wmake/wmake`, significa que o `wmake` está instalado e disponível no caminho correto.
+# 
+#     Caso não retorne nada, tente rodar:
+# 
+#     ```
+#     echo $WM_DIR
+#     ```
+# 
+#     Se o resultado for vazio, o OpenFOAM pode não estar carregando corretamente as variáveis de ambiente.
+# 
+# 2️. **Verifique se o `OpenFOAM` consegue rodar `wmake`**: Tente rodar o seguinte comando:
+# 
+#     ```
+#     source /usr/lib/openfoam/openfoam2312/etc/bashrc
+#     wmake -help
+#     ```
+# 
+#     Se o erro persistir, pode ser que o wmake não tenha permissões corretas.
+# 
+# 3️. **Corrigir permissões (se necessário)**:
+# 
+#     ```
+#     sudo chmod +x /usr/lib/openfoam/openfoam2312/wmake/*
+#     ```
+# 
+# 4. Após isso, tente rodar novamente:
+# 
+#     ```
+#     wmake -help
+#     ```
+# 
+# Se `wmake` agora estiver funcionando.
 
 # ## Referências
 # 
