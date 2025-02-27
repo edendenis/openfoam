@@ -635,11 +635,11 @@
 # 
 # 1. **Teste se o `OpenFOAM` está instalado**:
 # 
-# ```
-# foamInstallationTest
-# ```
+#     ```
+#     foamInstallationTest
+#     ```
 # 
-# Se não estiver instalado, siga os passos desta instalação.
+#     Se não estiver instalado, siga os passos desta instalação.
 # 
 
 # ### 5.3.2 Baixar o código-fonte do `HiSA`
@@ -648,27 +648,27 @@
 # 
 # 1️. **Navegue até a pasta do `OpenFOAM`**:
 # 
-# ```
-# cd $WM_PROJECT_USER_DIR
-# ```
+#     ```
+#     cd $WM_PROJECT_USER_DIR
+#     ```
 # 
-# Se a variável `$WM_PROJECT_USER_DIR` não estiver definida, tente:
+#     Se a variável `$WM_PROJECT_USER_DIR` não estiver definida, tente:
 # 
-# ```
-# cd $HOME/OpenFOAM
-# ```
+#     ```
+#     cd $HOME/OpenFOAM
+#     ```
 # 
 # 2. **Baixar o `HiSA` do repositório oficial**:
 # 
-# ```
-# git clone https://gitlab.com/hisa/hisa.git
-# ```
+#     ```
+#     sudo git clone https://gitlab.com/hisa/hisa.git
+#     ```
 # 
 # 3️. **Acesse a pasta do `HiSA`**:
 # 
-# ```
-# cd hisa
-# ```
+#     ```
+#     cd hisa
+#     ```
 # 
 
 # #### 5.3.3 Configurar e Compilar o `HiSA`
@@ -677,54 +677,202 @@
 # 
 # 1. **Configurar o ambiente do `OpenFOAM`**:
 # 
-# ```
-# source $FOAM_ETC/bashrc
-# ```
+#     ```
+#     source $FOAM_ETC/bashrc
+#     ```
 # 
 # 2. **Compilar o `HiSA`**:
 # 
-# ```
-# wmake libso
-# ```
+#     ```
+#     wmake libso
+#     ```
 # 
-# Isso compilará o `HiSA` como uma biblioteca compartilhada.
+#     Isso compilará o `HiSA` como uma biblioteca compartilhada.
 # 
 # 3️. **Compilar os solvers do `HiSA`**:
 # 
-# ```
-# cd applications/solverss
-# wmake
-# ```
+#     ```
+#     cd applications/solverss
+#     wmake
+#     ```
 # 
-# **Nota**: Se houver erro de dependências, verifique se você tem pacotes como build-`essential` e cmake instalados:
+#     **Nota**: Se houver erro de dependências, verifique se você tem pacotes como build-`essential` e cmake instalados:
 # 
-# ```
-# sudo apt install -y build-essential cmake
-# ```
+#     ```
+#     sudo apt install build-essential cmake -y
+#     ```
 # 
 
 # #### 5.3.4 Testar a Instalação
 # 
-# Depois de compilar, teste se o `HiSA` está instalado corretamente:
+# 1. Depois de compilar, teste se o `HiSA` está instalado corretamente:
 # 
-# ```
-# hisaFoam -help
-# ```
+#     ```
+#     hisaFoam -help
+#     ```
 # 
-# Se o comando for reconhecido, significa que o `HiSA` foi instalado com sucesso.
+#     Se o comando for reconhecido, significa que o `HiSA` foi instalado com sucesso.
 # 
 
 # #### 5.3.5 Executar um Caso de Teste
 # 
-# Para verificar se tudo funciona corretamente, execute um caso-teste:
+# Para verificar se tudo funciona corretamente, você pode rodar seus casos de simulação utilizando o `hisa`. Se quiser testar um caso simples, pode seguir esse fluxo:
 # 
-# ```
-# mkdir -p $FOAM_RUN/hisa_test
-# cd $FOAM_RUN/hisa_test
-# cp -r $FOAM_TUTORIALS/compressible/hisa/mach5_wedge .
-# cd mach5_wedge
-# hisaFoam
-# ```
+# 1. **Criar um diretório de teste**:
+# 
+#     ```
+#     sudo mkdir -p $FOAM_RUN/hisa_test
+#     cd $FOAM_RUN/hisa_test
+#     ```
+# 
+# 2. **Copiar um caso de teste**: Se houver tutoriais disponíveis:
+# 
+#     ```
+#     sudo cp -r /usr/lib/openfoam/openfoam2312/ThirdParty/hisa/examples/aerodynamicHeating ~/OpenFOAM/edenedfsls-v2312/run/hisa_test/hisa_case
+#     cd ~/OpenFOAM/edenedfsls-v2312/run/hisa_test/hisa_case
+#     ```
+# 
+# 3. **Verifique onde está o `blockMeshDict`**: Rode o comando:
+# 
+#     ```
+#     find ~/OpenFOAM/edenedfsls-v2312/run/hisa_test/hisa_case -type f -name "blockMeshDict"
+#     ```
+# 
+#     Isso mostrará onde o arquivo está localizado.
+# 
+#     * Se o `blockMeshDict` estiver dentro de `system/fluid/` ou `system/solid/`, copie-o para `system/`:
+# 
+#     ```
+#     sudo cp -r system/fluid/blockMeshDict system/
+#     ```
+#     
+#     ou
+# 
+#     ```
+#     sudo cp -r system/solid/blockMeshDict system/
+#     ```
+# 
+# 4. **Corrigindo as permissões**: Execute os comandos abaixo para garantir que seu usuário tenha as permissões corretas:
+# 
+#     ```
+#     sudo chown -R $USER:$USER ~/OpenFOAM/edenedfsls-v2312/run/hisa_test/
+#     chmod -R u+rwX ~/OpenFOAM/edenedfsls-v2312/run/hisa_test/
+#     ```
+# 
+# 5. Em seguida, tente novamente:
+# 
+#     ```
+#     blockMesh
+#     ```
+# 
+#     Se ainda houver problemas, force as permissões para o diretório específico:
+# 
+#     ```
+#     chmod -R 755 ~/OpenFOAM/edenedfsls-v2312/run/hisa_test/hisa_case/constant/
+#     chmod -R 755 ~/OpenFOAM/edenedfsls-v2312/run/hisa_test/hisa_case/system/
+#     ```
+#     
+#     Agora tente rodar novamente:
+# 
+#     ```
+#     blockMesh
+#     ```
+# 
+#     Se rodar sem erros, verifique se a malha foi criada corretamente:
+# 
+#     ```
+#     ls -al constant/polyMesh/
+#     ```
+#     
+#     Se aparecerem arquivos como:
+#     
+#     * `boundary`,
+# 
+#     * `points`,
+#     
+#     * `faces`,
+#     
+#     * `neighbour`,
+#     
+#     * `owner`
+#     
+#     A malha foi gerada corretamente!
+# 
+# 6. **Verifique se o arquivo `fvSchemes` existe**
+# 
+#     ```
+#     ls ~/OpenFOAM/edenedfsls-v2312/run/hisa_test/hisa_case/system/
+#     ```
+# 
+#     Se `fvSchemes` não estiver presente, você pode tentar copiá-lo de um dos subdiretórios:
+# 
+#     ```
+#     sudo cp -r ~/OpenFOAM/edenedfsls-v2312/run/hisa_test/hisa_case/system/fluid/fvSchemes ~/OpenFOAM/edenedfsls-v2312/run/hisa_test/hisa_case/system/
+#     ```
+# 
+# 7. **Verifique também o `fvSolution`**: Além do `fvSchemes`, o solver pode precisar do `fvSolution`. Certifique-se de copiá-lo também, caso esteja faltando:
+# 
+#     ```
+#     sudo cp -r ~/OpenFOAM/edenedfsls-v2312/run/hisa_test/hisa_case/system/fluid/fvSolution ~/OpenFOAM/edenedfsls-v2312/run/hisa_test/hisa_case/system/
+#     ```
+# 
+# 8. **Verifique onde o `controlDict` está localizado**
+# 
+#     ```
+#     find ~/OpenFOAM/edenedfsls-v2312/run/hisa_test/hisa_case -name controlDict
+#     ```
+# 
+# 9. Se `hisa` está tentando acessar `system/fluid/system/controlDict`, mas o arquivo correto está em `system/controlDict`, faça o seguinte: Copie o `controlDict` para o local esperado:
+# 
+#     ```
+#     sudo mkdir -p ~/OpenFOAM/edenedfsls-v2312/run/hisa_test/hisa_case/system/fluid/system
+#     sudo cp ~/OpenFOAM/edenedfsls-v2312/run/hisa_test/hisa_case/system/controlDict \
+#     ~/OpenFOAM/edenedfsls-v2312/run/hisa_test/hisa_case/system/fluid/system/
+#     ```
+# 
+# 10. **Verifique onde o `thermophysicalProperties` está localizado**
+# 
+#     ```
+#     find ~/OpenFOAM/edenedfsls-v2312/run/hisa_test/hisa_case -name thermophysicalProperties
+#     ```
+# 
+# 11.  Se `hisa` está tentando acessar `constant/thermophysicalProperties`, mas o arquivo correto está em `constant/fluid` e `constant/solid/`, faça o seguinte: Copie o `thermophysicalProperties` para o local esperado:
+# 
+#     ```
+#     sudo mkdir -p ~/OpenFOAM/edenedfsls-v2312/run/hisa_test/hisa_case/system/fluid/system
+#     sudo cp ~/OpenFOAM/edenedfsls-v2312/run/hisa_test/hisa_case/constant/fluid/thermophysicalProperties \
+#    ~/OpenFOAM/edenedfsls-v2312/run/hisa_test/hisa_case/constant/
+#     ```
+# 
+# 12. **Verifique onde o `p` está localizado**
+# 
+#     ```
+#     find ~/OpenFOAM/edenedfsls-v2312/run/hisa_test/hisa_case/0/ -name p
+#     ```
+# 
+#     Se o arquivo estiver localizado em `system/`, basta garantir que `hisa` esteja sendo executado no diretório correto.
+# 
+# 13.  Se `hisa` está tentando acessar `p`, mas o arquivo correto está em `hisa_case/0/fluid/p` e `hisa_case/0/solid/p`, faça o seguinte: Copie o `p` para o local esperado:
+# 
+#     ```
+#     sudo cp -r ~/OpenFOAM/edenedfsls-v2312/run/hisa_test/hisa_case/shockTube/simulation/0.org/* \
+#       ~/OpenFOAM/edenedfsls-v2312/run/hisa_test/hisa_case/0/
+#     ```
+# 
+# 14. **Tente rodar o `hisa`**:
+# 
+#     ```
+#     cd ~/OpenFOAM/edenedfsls-v2312/run/hisa_test/hisa_case
+#     hisa
+#     ```
+# 
+#     Caso queira rodar em paralelo (recomendado):
+# 
+#     ```
+#     cd ~/OpenFOAM/edenedfsls-v2312/run/hisa_test/hisa_case
+#     decomposePar
+#     mpirun -np 4 hisa -parallel
+#     ```
 
 # ## 6. Instalar e configurar o Message Passing Interface (MPI)
 # 
