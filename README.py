@@ -721,6 +721,54 @@
 # hisaFoam
 # ```
 
+# ## 6. Instalar e configurar o MPI
+# 
+# Se o erro `MPI was not found. Parallel execution will not be possible.` isso indica que o Message Passing Interface (MPI) não está instalado corretamente ou não está acessível no ambiente do OpenFOAM.
+# 
+# 1️. **Verifique se o `OpenMPI` está instalado**: Execute:
+# 
+#     ```
+#     mpiexec --version
+#     ```
+# 
+#     Se aparecer um erro como `command not found`, significa que o MPI precisa ser instalado.
+# 
+# 2️. **Instale o `OpenMPI` (caso necessário)**:
+# 
+#     Se o comando acima falhou, instale com:
+# 
+#     ```
+#     sudo apt install openmpi-bin openmpi-common libopenmpi-dev -y
+#     ```
+# 
+# 3️. **Verifique se o `OpenFOAM` está reconhecendo o `OpenMPI`**: Abra um `Terminal Emulator` e rode:
+# 
+#     ```
+#     echo $MPI_ARCH_PATH
+#     ```
+# 
+#     3.1 Se o resultado for vazio, significa que o `OpenFOAM` não está reconhecendo o MPI corretamente. Adicione o seguinte ao seu `Bash` ou `Z Shell`:
+# 
+#     ```
+#     export MPI_ARCH_PATH=/usr/lib/x86_64-linux-gnu/openmpi
+#     export PATH=$MPI_ARCH_PATH/bin:$PATH
+#     export LD_LIBRARY_PATH=$MPI_ARCH_PATH/lib:$LD_LIBRARY_PATH
+#     ```
+# 
+#     3.2 Depois, atualize o `Terminal Emulator`:
+# 
+#     ```
+#     source ~/.zshrc
+#     ```
+# 
+# 4️. **Teste a execução paralela**: Agora, teste se o `OpenMPI` está funcionando com `OpenFOAM`:
+# 
+#     ```
+#     mpirun --version
+#     ```
+# 
+# Se o comando exibir a versão corretamente, está tudo funcionando.
+
 # ## Referências
 # 
 # [1] OPENAI. ***Instalação opemfoam ubuntu.*** Disponível em: <https://chatgpt.com/c/67af9ad1-09ec-8002-8552-e371c2edb694> (texto adaptado). ChatGPT. Acessado em: 14/02/2025 14:23.
