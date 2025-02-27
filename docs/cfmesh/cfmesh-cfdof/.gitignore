@@ -1,0 +1,11 @@
+*.dep
+*lnInclude*
+*linux*
+cfMesh*
+**/lnInclude/*
+**/Make/*/**
+log
+log.*
+*~
+
+.vscode/ipch

@@ -62,6 +62,44 @@ Para configurar/instalar/usar o `OpemFOAM` no `Linux Ubuntu`, você pode usar o 
     2.8 Realmente atualizar os pacotes instalados para as suas versões mais recentes, com base na última vez que você executou `sudo apt update`. Digite o seguinte comando e pressione `Enter`: `sudo apt full-upgrade -y`
     
 
+## Diferenças entre OpenFOAM.org e OpenFOAM.com
+
+Há diferenças entre as versões do `OpenFOAM` distribuídas pelos sites **openfoam.com** e **openfoam.org**.  
+Embora ambas compartilhem um histórico comum, elas seguiram caminhos distintos no desenvolvimento.  
+
+### 1️. Origem da Divergência  
+
+O `OpenFOAM` foi originalmente criado pela **OpenCFD Ltd.**, que posteriormente foi adquirida pela **ESI Group**.  
+Em **2011**, a comunidade `OpenFOAM` se dividiu em dois grupos:  
+
+- **[openfoam.org](https://openfoam.org/)** → Mantém o desenvolvimento **aberto e comunitário**.
+
+- **[openfoam.com](https://www.openfoam.com/)** → Mantém um desenvolvimento **liderado pela OpenCFD (ESI Group)**, com lançamentos regulares e suporte comercial.  
+
+### 2️. Diferenças Principais  
+
+| **Característica**   | **OpenFOAM.org** | **OpenFOAM.com** |
+|----------------------|-----------------|------------------|
+| **Desenvolvimento**  | Mantido pela comunidade e OpenFOAM Foundation. | Mantido pela OpenCFD (ESI Group). |
+| **Lançamento**       | Menos frequente, versões estáveis. | Lançado a cada 6 meses. |
+| **Nome das versões** | OpenFOAM X (ex: OpenFOAM 11) | OpenFOAM vXXXX (ex: OpenFOAM v2312) |
+| **Licença**          | GPL v3 (Software Livre) | GPL v3 (Software Livre) |
+| **Suporte**          | Baseado na comunidade e fóruns. | Suporte comercial disponível. |
+| **Compilação**       | Pode exigir mais configurações manuais. | Disponível em pacotes binários para várias distribuições. |
+| **Ferramentas**      | Algumas diferenças na estrutura e implementação de solvers. | Inclui algumas otimizações proprietárias. |
+| **cfMesh & HiSA**    | Não incluídos nativamente. | Incluídos no repositório. |
+
+### 3️. Qual Escolher?  
+
+A escolha depende do seu objetivo:  
+
+* **Se busca estabilidade e controle total** → Use **OpenFOAM.org**.
+
+* **Se deseja lançamentos frequentes e suporte comercial** → Use **OpenFOAM.com**.  
+
+* **Se precisa do cfMesh ou HiSA integrado** → **OpenFOAM.com** facilita a instalação.  
+
+
 ## 1. Instalação o `OpemFOAM` no `Linux Ubuntu` via Repositório Oficial do `OpenFOAM` (Recomendado)
 
 Para instalar o `OpemFOAM` no `Linux Ubuntu` pelo `Terminal Emulator`, você pode seguir os passos abaixo. Para obter a versão mais recente diretamente da fonte.
@@ -184,11 +222,19 @@ Se `wmake` aparecer corretamente, a instalação está funcionando!
     ```
 
 
-## 2. Instalação o `docker` no `Linux Ubuntu` (Opcional, mas recomendado)
+## 2. Instalação o `docker` e/ou do `podman` no `Linux Ubuntu` (Opcional, mas recomendado)
+
+# Docker no `Linux`
+
+No `Linux`, pode-se utilizar tanto o `docker` quanto o `podman`; no entanto, o `podman` é preferido.
+
+Se o `podman` não estiver instalado por padrão, é necessário instalar `docker` ou `podman`. As instruções típicas de instalação para um sistema baseado em Debian são mostradas abaixo. Para outras distribuições, instruções semelhantes estarão disponíveis.
+
+### 2.1 `docker`
 
 Para instalar o `Docker` no `Linux Ubuntu`, siga os passos abaixo:
 
-1. **Instalar `docker` Correto**: Agora instale o Docker corretamente:
+1. **Instalar `docker` Correto**: Agora instale o `Docker` corretamente:
 
     ```
     sudo apt update
@@ -227,6 +273,64 @@ Para instalar o `Docker` no `Linux Ubuntu`, siga os passos abaixo:
     ```
     docker run hello-world
     ```
+
+### 2.2 `podman`
+
+Para instalar o `Podman` no `Linux Ubuntu`, siga os passos abaixo:
+
+1. **Atualizar os repositórios do sistema**:
+
+    ```bash
+    sudo apt update
+    ```
+
+2. **Instalar o `Podman` corretamente**:
+
+    ```bash
+    sudo apt install -y podman crun
+    ```
+
+3. **Verificar se o `Podman` foi instalado corretamente**:
+
+    ```bash
+    podman --version
+    which podman
+    ```
+
+4. **Configurar permissões de sub-usuários e sub-grupos** (Necessário para execução sem root):
+
+    ```bash
+    sudo usermod --add-subuids 10000-75535 $USER
+    sudo usermod --add-subgids 10000-75535 $USER
+    ```
+
+5. **Migrar configurações antigas (se aplicável)**:
+
+    ```bash
+    podman system migrate
+    ```
+
+6. **Testar a instalação com um container de exemplo**:
+
+    ```bash
+    podman run hello-world
+    ```
+
+7. **Configurar `Podman` como rootless (Opcional, mas recomendado para segurança):**
+
+    ```bash
+    echo "export PATH=$HOME/.local/bin:$PATH" >> ~/.bashrc
+    echo "export XDG_RUNTIME_DIR=/run/user/$(id -u)" >> ~/.bashrc
+    source ~/.bashrc
+    ```
+
+8. **Verificar se o `Podman` está rodando corretamente**:
+
+    ```bash
+    podman info
+    ```
+
+
 
 ## 3. Instalação o `ParaView` no `Linux Ubuntu` (Opcional, mas recomendado)
 
